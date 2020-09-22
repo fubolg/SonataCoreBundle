@@ -14,12 +14,34 @@ declare(strict_types=1);
 namespace Sonata\CoreBundle\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @deprecated since sonata-project/core-bundle 3.13.0, to be removed in 4.0.
  */
-class DatePickerType extends \Sonata\Form\Type\DatePickerType
+class DatePickerType extends \Sonata\Form\Type\BasePickerType
 {
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(array_merge($this->getCommonDefaults(), [
+            'dp_pick_time' => false,
+            'format' => DateType::DEFAULT_FORMAT,
+        ]));
+
+        parent::configureOptions($resolver);
+    }
+
+    public function getParent(): string
+    {
+        return DateType::class;
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'sonata_type_date_picker';
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         @trigger_error(

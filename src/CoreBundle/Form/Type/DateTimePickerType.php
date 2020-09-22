@@ -20,8 +20,31 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * @deprecated since sonata-project/core-bundle 3.13.0, to be removed in 4.0.
  */
-class DateTimePickerType extends \Sonata\Form\Type\DateTimePickerType
+class DateTimePickerType extends \Sonata\Form\Type\BasePickerType
 {
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(array_merge($this->getCommonDefaults(), [
+            'dp_use_minutes' => true,
+            'dp_use_seconds' => true,
+            'dp_minute_stepping' => 1,
+            'format' => DateTimeType::DEFAULT_DATE_FORMAT,
+            'date_format' => null,
+        ]));
+
+        parent::configureOptions($resolver);
+    }
+
+    public function getParent(): string
+    {
+        return DateTimeType::class;
+    }
+
+    public function getBlockPrefix(): string
+    {
+        return 'sonata_type_datetime_picker';
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         @trigger_error(
@@ -36,18 +59,5 @@ class DateTimePickerType extends \Sonata\Form\Type\DateTimePickerType
     public function getName()
     {
         return 'sonata_type_datetime_picker_legacy';
-    }
-
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(array_merge($this->getCommonDefaults(), [
-            'dp_use_minutes' => true,
-            'dp_use_seconds' => true,
-            'dp_minute_stepping' => 1,
-            'format' => DateTimeType::DEFAULT_DATE_FORMAT,
-            'date_format' => null,
-        ]));
-
-        parent::configureOptions($resolver);
     }
 }
